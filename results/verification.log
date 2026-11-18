@@ -1,0 +1,10 @@
+DNN1_0dB: 1 hidden layers, 500 epochs, checkpoint from epoch 405
+DNN1_10dB: 1 hidden layers, 500 epochs, checkpoint from epoch 334
+DNN1_20dB: 1 hidden layers, 500 epochs, checkpoint from epoch 326
+DNN1_30dB: 1 hidden layers, 500 epochs, checkpoint from epoch 354
+DNN1_50dB: 1 hidden layers, 500 epochs, checkpoint from epoch 466
+DNN2_30dB: 1 hidden layers, 500 epochs, checkpoint from epoch 476
+DNN3_30dB: 2 hidden layers, 500 epochs, checkpoint from epoch 494
+DNN4_30dB: 2 hidden layers, 500 epochs, checkpoint from epoch 467
+Checked eight datasets, eight trained checkpoints and all 56 test files against the plotted CSV values.
+DNN4 curve agrees with the untouched MATLAB plot script within 0.001% relative tolerance.

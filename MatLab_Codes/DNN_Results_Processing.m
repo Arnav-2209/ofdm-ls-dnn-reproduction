@@ -1,55 +1,69 @@
-clc;clearvars;close all;
-DNN_index = 30;
-load('ErrSet');
-SNR_p   = (0:5:30)';
-%% 
-N_SNR   = size(SNR_p,1);
-Err_DNN = zeros(N_SNR,1);
-Phf     = zeros(N_SNR,1);
-for i = 1:size(SNR_p,1) 
-    load(['./DNN_Results_' num2str(i)]);
-    [O_HLS, O_Hf, Processed_DNN_H_HL ] = ProcessPythonData(eval(['test_x_',num2str(i)]),eval(['test_y_',num2str(i)]),eval(['corrected_y_',num2str(i)])); 
-    Err_DNN (i) = Err_DNN(i)+ norm(O_Hf-Processed_DNN_H_HL).^2;
-    Phf(i)  = Phf(i)  + norm(O_Hf)^ 2;
+clc; clearvars; close all;
+set(groot, 'DefaultFigureVisible', 'off');
+baseline = load('ErrSet.mat');
+testRows = find(baseline.SNR_p <= 30);
+testSNR = baseline.SNR_p(testRows);
+
+plotComparison(baseline, testRows, testSNR, ...
+    ["DNN1_30dB", "DNN2_30dB", "DNN3_30dB", "DNN4_30dB"], ...
+    ["DNN1", "DNN2", "DNN3", "DNN4"], ...
+    "All DNNs trained at 30 dB", "Fig2_NMSE_Architectures")
+
+plotComparison(baseline, testRows, testSNR, ...
+    ["DNN1_0dB", "DNN1_10dB", "DNN1_20dB", "DNN1_30dB", "DNN1_50dB"], ...
+    ["DNN1 at 0 dB", "DNN1 at 10 dB", "DNN1 at 20 dB", ...
+    "DNN1 at 30 dB", "DNN1 at 50 dB"], ...
+    "DNN1 by training SNR", "Fig1_NMSE_Training_SNR")
+
+function plotComparison(baseline, testRows, testSNR, cases, labels, heading, outputName)
+    nmse = table(testSNR, baseline.Err_LSth(testRows), ...
+        baseline.Err_LSsim(testRows), baseline.Err_MMSEth(testRows), ...
+        baseline.Err_MMSEsim(testRows), 'VariableNames', ...
+        {'SNR_dB', 'Analytical_LS', 'Simulation_LS', ...
+        'Analytical_MMSE', 'Simulation_MMSE'});
+    fig = figure('Position', [100 100 850 580], 'Color', 'white');
+    theme(fig, "light");
+    semilogy(testSNR, nmse.Analytical_LS, 'k--', 'DisplayName', 'Analytical LS');
+    hold on
+    semilogy(testSNR, nmse.Simulation_LS, 'kx', 'DisplayName', 'Simulated LS');
+    semilogy(testSNR, nmse.Analytical_MMSE, 'k:', 'DisplayName', 'Analytical MMSE');
+    semilogy(testSNR, nmse.Simulation_MMSE, 'ko', 'DisplayName', 'Simulated MMSE');
+    markers = ["-d", "-s", "-^", "-v", "-p"];
+    for model = 1:numel(cases)
+        [repoError, energyError] = measureCase(cases(model), numel(testSNR));
+        semilogy(testSNR, repoError, markers(model), 'LineWidth', 1.5, ...
+            'DisplayName', labels(model));
+        nmse.(cases(model) + "_repo") = repoError;
+        nmse.(cases(model) + "_energy") = energyError;
+    end
+    grid on
+    xlim([testSNR(1), testSNR(end)])
+    ylim([1e-6 1.2])
+    xticks(testSNR)
+    xlabel('Test SNR (dB)')
+    ylabel('Normalized mean squared error')
+    title(heading)
+    legend('Location', 'southwest')
+    exportgraphics(fig, outputName + ".png", 'Resolution', 180);
+    writetable(nmse, outputName + ".csv");
+    close(fig)
 end
 
-Err_DNN = Err_DNN ./ size (O_Hf,2);
-Phf = Phf ./ size (O_Hf,2);
-Err_DNN_normalized = Err_DNN ./ Phf;
+function [repoError, energyError] = measureCase(caseName, numberOfSNRs)
+    repoError = zeros(numberOfSNRs, 1);
+    energyError = zeros(numberOfSNRs, 1);
+    for i = 1:numberOfSNRs
+        predictions = load(fullfile('cases', caseName, "DNN_Results_" + i + ".mat"));
+        truth = asComplex(predictions.("test_y_" + i));
+        estimate = asComplex(predictions.("corrected_y_" + i));
+        residual = truth - estimate;
+        % Preserve the authors' default matrix norm for the plotted curves.
+        repoError(i) = norm(residual)^2 / norm(truth)^2;
+        % Save the ratio of total squared errors to total channel energy as well.
+        energyError(i) = norm(residual, 'fro')^2 / norm(truth, 'fro')^2;
+    end
+end
 
-figure,
-semilogy(SNR_p, Err_LSth ,'k--','LineWidth',2);
-hold on;
-semilogy(SNR_p,Err_LSsim,'k+','LineWidth',2);
-hold on;
-semilogy(SNR_p,Err_MMSEth,'k--','LineWidth',2);
-hold on;
-semilogy(SNR_p,Err_MMSEsim,'ko','LineWidth',2);
-hold on;
-semilogy(SNR_p,Err_DNN_normalized,'r-d','LineWidth',2);
-grid on;
-legend('Analytical-Ls', 'sim-LS', 'Analytical-MMSE', 'sim-MMSE',['DNN' num2str(DNN_index)],'location','best')
-xlabel('SNR (dB)')
-ylabel('NMSE')
-
-
-function [Processed_Orginal_Testing_X,Processed_Orginal_Testing_Y,Predicted_Testing_Y] =ProcessPythonData(a,b,c)
-
-
-Testing_Channels_X = a.';
-testing_real_X = Testing_Channels_X(1:52,:);
-testing_imag_X = Testing_Channels_X(53:104,:);
-Processed_Orginal_Testing_X = testing_real_X + 1i *  testing_imag_X;
-
-
-Testing_Channels_Y = b.';
-testing_real_Y = Testing_Channels_Y(1:52,:);
-testing_imag_Y = Testing_Channels_Y(53:104,:);
-Processed_Orginal_Testing_Y = testing_real_Y + 1i *  testing_imag_Y;
-
-
-Predicted_Channels = c.';
-H_real2 = Predicted_Channels(1:52,:);
-H_image2 = Predicted_Channels(53:104,:);
-Predicted_Testing_Y = H_real2 + 1i *  H_image2;
+function channel = asComplex(rows)
+    channel = (double(rows(:, 1:52)) + 1i * double(rows(:, 53:104))).';
 end

@@ -1,0 +1,15 @@
+{Error using comm.RayleighChannel/step
+Changing the complexity (from real to complex) on input 1 of System object
+comm.RayleighChannel is not allowed without first calling the <a
+href="matlab:helpview('matlab','releaseSystemObject')">release()</a> method.
+
+Error in Channel_functions/ApplyChannel (line 63)
+y = step(rchan, complex(X(:)));
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Error in Estimation_functions>Estimat_Rh (line 37)
+    [ h, ~ ] = ch_func.ApplyChannel( rchan, xp_cp, K_cp);
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Error in Main_Simulation (line 36)
+Rh          = est_func.Estimat_Rh(rchan, K_cp, K, Kset);
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ - Show complete stack trace
+}

@@ -1,0 +1,11 @@
+{Unable to resolve the name 'comm.RayleighChannel'.
+
+comm.RayleighChannel requires Communications Toolbox.
+
+Error in Channel_functions/GenFadingChannel (line 165)
+rchan = comm.RayleighChannel('SampleRate',fs, ...
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Error in Main_Simulation (line 11)
+rchan    = ch_func.GenFadingChannel(ChType, fD, fs); % Channel generation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+}

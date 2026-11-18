@@ -20,7 +20,7 @@ Ep       = 1;                          % preamble power
 dp       = sqrt(Ep)*dp.';              % Normalization
 xp       = ifft(dp);                   % Frequency-Time conversion
 xp_cp    = [xp(end-K_cp+1:end); xp];   % Adding CP 
-SNR_p    = (0:5:30)';                  % SNR range
+SNR_p    = ([0:5:30, 50])';                  % SNR range
 N_SNR    = length(SNR_p);              % SNR length
 N0       = Ep/K*10.^(-SNR_p/10);       % Noise power : snr_p = Ep/KN0 => N0 = Ep/(K*snr_p)
 
@@ -109,6 +109,7 @@ Err_MMSEth        = Err_MMSE_th./Phf;
 Err_MMSEsim       = Err_MMSE./Phf;
 
 %% Plotting NMSE Results
+set(groot, 'DefaultFigureVisible', 'off');
 figure,
 semilogy(SNR_p, Err_LSth ,'k--','LineWidth',2);
 hold on;
@@ -123,4 +124,4 @@ legend('Analytical-Ls', 'sim-LS', 'Analytical-MMSE', 'sim-MMSE')
 xlabel('Preamble SNR')
 ylabel('Average Error per subcarrier')
 
-save('ErrSet.mat','Err_LSth','Err_LSsim', 'Err_MMSEth', 'Err_MMSEsim')
+save('ErrSet.mat','SNR_p', 'Err_LSth','Err_LSsim', 'Err_MMSEth', 'Err_MMSEsim')

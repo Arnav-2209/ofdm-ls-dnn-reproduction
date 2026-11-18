@@ -2,7 +2,7 @@ clc;
 clearvars;
 close all;
 N_CH  = 1000;
-SNR_p = 0:5:30;
+SNR_p = [0:5:30, 50];
 k = 52;
 X = zeros(k*2, N_CH);
 Y = zeros(k*2, N_CH);

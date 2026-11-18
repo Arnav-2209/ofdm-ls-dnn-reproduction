@@ -1,0 +1,60 @@
+Installing with the following parameters:
+--destination=/Applications/MATLAB_R2026a.app
+--release=R2026a
+--products=Communications_Toolbox
+---------------------------------------------
+The following required products will also be installed:
+DSP System Toolbox
+Signal Processing Toolbox
+
+The following MathWorks Products are licensed under The MathWorks, Inc. Software License Agreement,
+available in the installation of the MathWorks Product or in the virtual machine image.
+Communications_Toolbox, DSP_System_Toolbox, Signal_Processing_Toolbox
+
+Starting install
+Products will be installed to: /Applications/MATLAB_R2026a.app
+
+Installing... 3%
+Installing... 5%
+Installing... 7%
+Installing... 9%
+Installing... 11%
+Installing... 14%
+Installing... 16%
+Installing... 19%
+Installing... 25%
+Installing... 27%
+Installing... 29%
+Installing... 31%
+Installing... 33%
+Installing... 35%
+Installing... 37%
+Installing... 40%
+Installing... 42%
+Installing... 44%
+Installing... 46%
+Installing... 48%
+Installing... 51%
+Installing... 53%
+Installing... 55%
+Installing... 57%
+Installing... 59%
+Installing... 61%
+Installing... 67%
+Installing... 69%
+Installing... 73%
+Installing... 75%
+Installing... 77%
+Installing... 79%
+Installing... 81%
+Installing... 83%
+Installing... 85%
+Installing... 87%
+Installing... 91%
+Installing... 93%
+Installing... 95%
+Installing... 97%
+Installing... 99%
+Installing... 100%
+Completing setup...
+Installation complete

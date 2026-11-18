@@ -50,16 +50,17 @@ function [ He, Y ] = ApplyChannel( rchan, X, Ncp)
 %release(rchan);
 %rchan.Seed = rchan.Seed+1; % change realization
 [Ns, NB] = size(X);
+% Keep both calls complex so the channel stays locked with the same input type.
 D = zeros(Ns,NB);
 % Estimate the channel appling a pulse
 D(Ncp+1,:) = 1;
 He = zeros(size(D));
 for nb=1:NB
-    He(:,nb) = step(rchan, D(:,nb));
+    He(:,nb) = step(rchan, complex(D(:,nb)));
 end
 % reset the channel to first state which correspond to the estimation
 reset(rchan);
-y = step(rchan, X(:));
+y = step(rchan, complex(X(:)));
 Y = reshape(y,Ns, NB);
 end
 function [He, Hf_Preamble] = PreambleAutoCorrection(rchan,Ncp,Nsc,Ns)
